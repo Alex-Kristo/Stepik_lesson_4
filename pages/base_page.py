@@ -1,7 +1,7 @@
 class BasePage(object):
-    def __init__(self, browser, url):
-        self.browser = browser
+    def __init__(self, driver, url):
+        self.driver = driver
         self.url = url
 
     def open(self):
-        self.browser.get(self.url)
+        self.driver.get(self.url)
