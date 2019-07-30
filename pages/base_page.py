@@ -23,6 +23,13 @@ class BasePage(object):
             return False
         return True
 
+    def is_not_element_present(self, how, what, timeout=4):
+        try:
+            WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located((how, what)))
+        except TimeoutException:
+            return True
+        return False
+
     def solve_quiz_and_get_code(self):
         alert = self.driver.switch_to.alert
         x = alert.text.split(" ")[2]
@@ -36,16 +43,19 @@ class BasePage(object):
         except NoAlertPresentException:
             print("No second alert presented")
 
-    def is_not_element_present(self, how, what, timeout=4):
-        try:
-            WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located((how, what)))
-        except TimeoutException:
-            return True
-        return False
-
     def go_to_login_page(self):
-        link = self.driver.find_element(*BasePageLocators.LOGIN_LINK_INVALID)
+        link = self.driver.find_element(*BasePageLocators.LOGIN_LINK)
         link.click()
 
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
+
+    def substring_in(self, full_string, substring):
+        assert substring in full_string, "expected '{}' to be substring of '{}'".format(substring, full_string)
+
+    def go_to_cart(self):
+        self.open()
+        cart_btn = self.driver.find_element(*BasePageLocators.CART_BTN)
+        cart_btn.click()
+        curr_url = self.driver.current_url
+        return BasePage(driver=self.driver, url=curr_url)
