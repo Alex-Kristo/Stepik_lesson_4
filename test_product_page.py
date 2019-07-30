@@ -38,7 +38,7 @@ class TestUserAddToCartFromProductPage(object):
         page.is_not_element_present(*ProductPageLocators.ADD_TO_CART_ACCESS)
 
 
-@pytest.mark.parametrize('link', ["http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0")
+@pytest.mark.parametrize('link', ["http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0"])
 def test_guest_can_add_product_to_cart(driver, link):
     page = ProductPage(driver, link)
     page.open()
