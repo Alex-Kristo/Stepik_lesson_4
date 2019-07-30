@@ -18,3 +18,11 @@ class ProductPage(BasePage):
         assert True
         product_price = self.driver.find_element(how, what)
         return product_price.text
+
+    def product_name_in_cart(self):
+        assert self.find_product_name(*ProductPageLocators.PRODUCT_NAME_IN_CART) == \
+            self.find_product_name(*ProductPageLocators.PRODUCT_NAME), "Product name does not match"
+
+    def product_price_in_cart(self):
+        assert self.find_product_price(*ProductPageLocators.PRODUCT_PRICE_IN_CART) == \
+            self.find_product_price(*ProductPageLocators.PRODUCT_PRICE), "Product price does not match"
