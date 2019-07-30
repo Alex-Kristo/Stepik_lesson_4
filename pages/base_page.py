@@ -59,3 +59,7 @@ class BasePage(object):
         cart_btn.click()
         curr_url = self.driver.current_url
         return BasePage(driver=self.driver, url=curr_url)
+
+    def should_be_authorized_user(self):
+        assert self.is_element_present(*BasePageLocators.USER_ICON), "User icon is not presented," \
+                                                                 " probably unauthorised user"
