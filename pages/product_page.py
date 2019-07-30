@@ -4,7 +4,7 @@ from .locators import ProductPageLocators
 
 class ProductPage(BasePage):
     def should_be_add_to_card_btn(self):
-        self.is_element_present(*ProductPageLocators.ADD_TO_CARD_BTN)
+        self.is_element_present(*ProductPageLocators.ADD_TO_CART_BTN)
         assert True
 
     def find_product_name(self, how, what):
