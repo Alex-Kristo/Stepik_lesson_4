@@ -2,11 +2,44 @@ import pytest
 from .pages.product_page import ProductPage
 from .pages.locators import ProductPageLocators
 from .pages.cart_page import CartPage
+from .pages.login_page import LoginPage
+import time
 
 
-@pytest.mark.parametrize('link', ["http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
-                                  "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7"])
-def test_test_guest_can_add_product_to_cart(driver, link):
+class TestUserAddToCartFromProductPage(object):
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, driver):
+        link = "http://selenium1py.pythonanywhere.com/accounts/login/"
+        page = LoginPage(driver, link)
+        page.open()
+        email = str(time.time()) + "@fakemail.org"
+        password = str(time.time()) + "@fakemail.org"
+        page.register_new_user(email, password)
+        page.should_be_authorized_user()
+
+    @pytest.mark.parametrize('link',
+                             ["http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0"])
+    def test_user_can_add_product_to_cart(self, driver, link):
+        page = ProductPage(driver, link)
+        page.open()
+        page.should_be_add_to_card_btn()
+        add_to_cart_btn = page.driver.find_element(*ProductPageLocators.ADD_TO_CART_BTN)
+        add_to_cart_btn.click()
+        page.solve_quiz_and_get_code()
+        assert page.find_product_name(*ProductPageLocators.PRODUCT_NAME_IN_CART) == \
+            page.find_product_name(*ProductPageLocators.PRODUCT_NAME), "Product name does not match"
+        assert page.find_product_price(*ProductPageLocators.PRODUCT_PRICE_IN_CART) == \
+            page.find_product_price(*ProductPageLocators.PRODUCT_PRICE), "Product price does not match"
+
+    def test_user_cant_see_success_message(self, driver):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0"
+        page = ProductPage(driver, link)
+        page.open()
+        page.is_not_element_present(*ProductPageLocators.ADD_TO_CART_ACCESS)
+
+
+@pytest.mark.parametrize('link', ["http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0")
+def test_guest_can_add_product_to_cart(driver, link):
     page = ProductPage(driver, link)
     page.open()
     page.should_be_add_to_card_btn()
